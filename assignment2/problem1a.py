@@ -77,38 +77,21 @@ def BuildTree(tree, A, s, f, depth=0):
     if (s > f):
         print(f'{t}s > f, returning None')
         return None
-    print(f'{t}Cut: {A[s:f+1]}')
-    if (s == f):
-        print(f'{t}s == f, inserting node with A[s]: {A[s]}')
-        n = Node(A[s])
-        if tree == None:
-            tree = n
-        else:
-            tree.insert(n)
-        return tree
     m = MagicMedian(A, s, f)
     print(f'{t}Median index: {m} Median value: {A[m]}')
-    # swap the median to the end of the array
-    if (m != f):
-        temp = A[f]
-        A[f] = A[m]
-        A[m] = temp
-    print(f'{t}Array after swapping: {A}')
-    print(f'{t}Inserting node with A[f]: {A[f]}')
-    n = Node(A[f])
+    print(f'{t}Inserting node with A[m]: {A[m]}')
+    n = Node(A[m])
     if (tree == None):
         tree = n
     else:
         tree.insert(n)
-    mid = math.floor((s + f - 1) / 2)
-    print(f'{t}calculating mid split: {mid}')
-    print(f'{t}Making recursive call with s: {s} f: {mid}')
-    BuildTree(tree, A, s, mid, depth+1)
-    print(f'{t}Making recursive call with s: {mid+1} f: {f-1}')
-    BuildTree(tree, A, mid+1, f-1, depth+1)
+    print(f'{t}Making recursive call with s: {s} f: {m-1}')
+    BuildTree(tree, A, s, m-1, depth+1)
+    print(f'{t}Making recursive call with s: {m+1} f: {f}')
+    BuildTree(tree, A, m+1, f, depth+1)
     return tree
 
-n = 256
+n = 511
 A = list(range(n))
 #random.shuffle(A)
 print(f'A: {A}')
