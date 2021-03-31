@@ -71,29 +71,46 @@ def MagicMedian(A, s, f):
     medianValue = statistics.median_low(cut)
     return A.index(medianValue, s, f+1)
 
+def swap(A, i, j):
+    temp = A[i]
+    A[i] = A[j]
+    A[j] = temp
+
+def InPlacePartition(A, s, n):
+    slide = s-1
+    for j in range(s, n):
+        if A[j] < A[n]:
+            slide = slide + 1
+            swap(A, j, slide)
+    swap(A, slide+1, n)
+    return slide+1
+
 def BuildTree(tree, A, s, f, depth=0):
-    t=" "*depth
-    print(f'{t}Building tree: A: {A} s: {s} f: {f}')
+    t = " " * depth
     if (s > f):
-        print(f'{t}s > f, returning None')
+        #print(f'{t}s: {s} > f: {f}, so returning')
         return None
     m = MagicMedian(A, s, f)
-    print(f'{t}Median index: {m} Median value: {A[m]}')
-    print(f'{t}Inserting node with A[m]: {A[m]}')
-    n = Node(A[m])
+    #print(f'{t}Median index: {m} Median value: {A[m]}')
+    #print(f'{t}Array before partition: {A}')
+    swap(A, m, f)
+    #print(f'{t}Array after moving median: {A}')
+    mid = InPlacePartition(A, s, f)
+    #print(f'{t}Array after partition: {A}')
+    n = Node(A[mid])
     if (tree == None):
         tree = n
     else:
         tree.insert(n)
-    print(f'{t}Making recursive call with s: {s} f: {m-1}')
-    BuildTree(tree, A, s, m-1, depth+1)
-    print(f'{t}Making recursive call with s: {m+1} f: {f}')
-    BuildTree(tree, A, m+1, f, depth+1)
+    #print(f'{t}Making recursive call with s: {s} f: {mid-1}')
+    BuildTree(tree, A, s, mid-1, depth+1)
+    #print(f'{t}Making recursive call with s: {mid+1} f: {f}')
+    BuildTree(tree, A, mid+1, f, depth+1)
     return tree
 
-n = 511
-A = list(range(n))
-#random.shuffle(A)
+n = 255
+A = list(range(1,n+1))
+random.shuffle(A)
 print(f'A: {A}')
 bst = BuildTree(None, A, 0, n-1)
 print(f'BST: ', end="")
