@@ -1,5 +1,4 @@
 import statistics
-import random
 import math
 
 class Node:
@@ -7,51 +6,6 @@ class Node:
         self.key = key_in
         self.left = None
         self.right = None
-    
-    def inorder(self):
-        if (self.left != None):
-            self.left.inorder()
-        print(self.key, end=" ")
-        if (self.right != None):
-            self.right.inorder()
-    
-    def depth(self):
-        depth = 0
-        if (self.left == None):
-            leftDepth = -1
-        else:
-            leftDepth = self.left.depth()
-        if (self.right == None):
-            rightDepth = -1
-        else:
-            rightDepth = self.right.depth() 
-        depth = max(leftDepth, rightDepth) + 1
-        return depth
-
-    def printTree(self):
-        depth = self.depth()
-        for i in range(0, depth+1):
-            self.printLevel(i)
-            print()
-    
-    def printLevel(self, level):
-        if (level == 0):
-            print(self.key, end=" ")
-            return
-        if (self.left == None):
-            #print(f'level: {level}', end="")
-            dashCount = 2 ** (level - 1)
-            #print(f'dashCount: {dashCount}', end="")
-            print("- " * dashCount, end="")
-        else:
-            self.left.printLevel(level-1)
-        if (self.right == None):
-            #print(f'level: {level}', end="")
-            dashCount = 2 ** (level - 1)
-            print("- " * dashCount, end="")
-        else:
-            self.right.printLevel(level-1)
-        
     
     def insert(self, n):
         if (n.key < self.key):
@@ -64,7 +18,7 @@ class Node:
                 self.right = n
             else:
                 self.right.insert(n)
-    
+
     def deleteLeaf(self, n):
         if (n < self.key):
             if (self.left.key == n):
@@ -76,6 +30,19 @@ class Node:
                 self.right = None
             else:
                 self.right.deleteLeaf(n)
+
+    def depth(self):
+        depth = 0
+        if (self.left == None):
+            leftDepth = -1
+        else:
+            leftDepth = self.left.depth()
+        if (self.right == None):
+            rightDepth = -1
+        else:
+            rightDepth = self.right.depth() 
+        depth = max(leftDepth, rightDepth) + 1
+        return depth                
 
 def MagicMedian(A, s, f):
     cut = A[s:f+1]
@@ -111,27 +78,41 @@ def BuildTree(tree, A, s, f):
     BuildTree(tree, A, mid+1, f)
     return tree
 
+def FullHeight(n):
+    if (n.right == None):
+        return 0
+    return 1+FullHeight(n.right)
+
+def convertToRBT(n, h):
+    if (h>=0):
+        print(f'Coloring {n.key} as black')
+        n.color = "BLACK"
+    else:
+        print(f'Coloring {n.key} as red')
+        n.color = "RED"
+    if n.left != None:
+        convertToRBT(n.left, h-1)
+    else:
+        # insert NIL node
+        pass
+    if n.right != None:    
+        convertToRBT(n.right, h-1)
+    else:
+        # insert NIL node
+        pass
+
 n = 15
 A = list(range(1,n+1))
-random.shuffle(A)
 print(f'A: {A}')
 bst = BuildTree(None, A, 0, n-1)
-print(f'BST: ', end="")
-bst.inorder()
-print()
-depth = bst.depth()
-print(f'depth of BST: {depth}')
-bst.printTree()
 
 L = [9, 11, 13, 15]
 for i in L:
     print(f'Deleting: {i}')
     bst.deleteLeaf(i)
 
-print(f'BST: ', end="")
-bst.inorder()
-print()
 depth = bst.depth()
 print(f'depth of BST: {depth}')
-bst.printTree()
+print(f'FullHeight of BST: {FullHeight(bst)}')
 
+convertToRBT(bst, FullHeight(bst))
