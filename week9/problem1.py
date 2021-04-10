@@ -1,4 +1,4 @@
-n = 10
+n = 6
 r = []
 s = []
 for i in range(0, n+1):

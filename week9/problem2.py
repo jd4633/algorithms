@@ -26,7 +26,7 @@ def get_team_options(people):
                 s[i].append(team_option)
     return s[len(people)-1]
 
-people = ["a", "b", "c"]
+people = ["a", "b", "c", "d"]
 teams = get_team_options(people)
 print(f'teams: {teams}')
 print(f'teams size: {len(teams)}')
